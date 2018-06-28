@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+    <div class="login">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <p class="flashes alert">
+          {% for category, message in messages %}
+            <b style="color: #9C1A1C" class="flashes alert alert-{{category}}">{{ message }}</b>
+          {% endfor %}
+          </p>
+        {% else %}
+          <p class="flashes alert alert-primary">
+            <b>Please provide username and password to login</b>
+          </p>
+        {% endif %}
+        {% endwith %}
+
+        {%if form.errors %}
+        <p style="color: #9C1A1C" class="alert alert-danger">
+          {% for field, errors in form.errors.items() %}
+            <b>{{field}} {% for error in errors %}{{ error }}{% endfor %}</b>
+          {% endfor %}
+        </p>
+        {% endif %}
+        <form action="{{ url_for('simplelogin.login') }}" method="post">
+            <div class="form-group">
+                {{ form.csrf_token }}
+                {{form.username.label}}<div class="form-control">{{ form.username }}</div><br>
+                {{form.password.label}}<div class="form-control"> {{ form.password }}</div><br>
+                {% if next %}<input type="hidden" name="next" value="{{next}}">{% endif %}
+                <input id="sbm-btn" class="btn" type="submit" value="Send">
+            </div>
+        </form>
+    <p id="message"></p>
+    </div>
+</body>
+</html>
