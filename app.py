@@ -34,7 +34,7 @@ class Spend(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     account = db.Column(db.String, default=None)
     category = db.Column(db.String)
-    value = db.Column(db.Float(asdecimal=True))
+    value = db.Column(db.Float(precision=(5,2), asdecimal=True))
 
     def __repr__(self):
         return '<{} {}>'.format(self.category, self.value)
@@ -61,10 +61,11 @@ def hello_world():
 @app.route('/process', methods=['GET', 'POST'])
 def process():
     fields_data = loads(request.form['fields_data'])
-    spend = Spend(category=fields_data[0], value=fields_data[1])
-    db.session.add(spend)
-    db.session.commit()
-    return jsonify({'val': True})
+    if fields_data[0] and fields_data[1]:
+        spend = Spend(category=fields_data[0], value=fields_data[1])
+        db.session.add(spend)
+        db.session.commit()
+        return jsonify({'val': True})
 
 
 if __name__ == '__main__':
