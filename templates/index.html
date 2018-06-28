@@ -34,11 +34,12 @@
 
 
         $.ajax({
+            type: 'POST',
+            url: '/process',
             data: {
                 fields_data: JSON.stringify(db_data)
             },
-            type: 'POST',
-            url: '/process',
+
             success: function (data) {
                 console.log(data);
             }

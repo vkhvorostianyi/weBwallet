@@ -7,26 +7,37 @@ import os
 from json import loads
 
 app = Flask(__name__)
-db = SQLAlchemy(app)
-migrate = Migrate(app, db)
+
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-
 POSTGRES = {
-    'user': 'wallet_user',
-    'pw': 'p@ss@!worD',
-    'db': 'wallet_db',
-    'host': 'postgres',
+    'user': 'w_app_user',
+    'pw': 'p@ss@!worD2',
+    'db': 'app',
+    'host': 'localhost',
     'port': '5432',
 }
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://%(user)s:\
-%(pw)s@%(host)s:%(port)s/%(db)s' % POSTGRES
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://%(user)s:%(pw)s@%(host)s:%(port)s/%(db)s' % POSTGRES
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY') or 'my_task_secret_key'
 
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
+
+
 my_users = {'slava': {'password': 'slava', 'roles': []}}
+
+
+class Spend(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    account = db.Column(db.String, default=None)
+    category = db.Column(db.String)
+    value = db.Column(db.Float(asdecimal=True))
+
+    def __repr__(self):
+        return '<{} {}>'.format(self.category, self.value)
 
 
 def check_my_users(user):
@@ -50,7 +61,10 @@ def hello_world():
 @app.route('/process', methods=['GET', 'POST'])
 def process():
     fields_data = loads(request.form['fields_data'])
-    return fields_data, jsonify({'val': True})
+    spend = Spend(category=fields_data[0], value=fields_data[1])
+    db.session.add(spend)
+    db.session.commit()
+    return jsonify({'val': True})
 
 
 if __name__ == '__main__':
