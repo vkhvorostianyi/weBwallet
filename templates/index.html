@@ -15,11 +15,24 @@
             <div class="form-signin">
                 <form method="post" id = 'add-spend'>
                     <label for="cat" class="sr-only">category</label>
-                    <input id="cat" class="form-control" type="text">
+                    <input id="cat" list="cat-list" class="form-control" type="text">
+                    <datalist id="cat-list">
+                        <option>health and care</option>
+                        <option>sport</option>
+                        <option>food</option>
+                        <option>amusement</option>
+                        <option>travel</option>
+                        <option>gifts</option>
+                        <option>transport</option>
+                        <option>house</option>
+                    </datalist>
                     <label for="val" class="sr-only">value</label>
                     <input id='val' class="form-control" type="number">
                     <button type="submit" id="sbm-btn" class="btn btn-primary btn-block">ok</button>
                  </form>
+            </div>
+            <div>
+                <p id="w-balance"></p>
             </div>
         </div>
     </div>
@@ -30,10 +43,10 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script>
+
+
     function send() {
         let db_data = [$('#cat').val(), $('#val').val(),];
-
-
         $.ajax({
             type: 'POST',
             url: '/process',
@@ -43,6 +56,10 @@
 
             success: function (data) {
                 console.log(data);
+                $('#w-balance').append(
+                    {{ balance }}
+                )
+
             }
 
         })

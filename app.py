@@ -5,6 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 import os
 from json import loads
+from sqlalchemy import func
 
 app = Flask(__name__)
 
@@ -55,7 +56,8 @@ SimpleLogin(app, login_checker=check_my_users)
 @app.route('/', methods=['GET', 'POST'])
 @login_required
 def hello_world():
-    return render_template('index.html')
+    balance = db.session.query(func.sum(Spend.value)).one()[0]
+    return render_template('index.html', balance=balance)
 
 
 @app.route('/process', methods=['GET', 'POST'])
@@ -65,8 +67,8 @@ def process():
         spend = Spend(category=fields_data[0], value=fields_data[1])
         db.session.add(spend)
         db.session.commit()
-        return jsonify({'val': True})
+        # return jsonify({'val': True})
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='0.0.0.0', port=8000)
