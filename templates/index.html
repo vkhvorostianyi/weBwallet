@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
 </head>
 <body class="text-center">
-<div class="container">
+<div class="container" id="main-cont">
     <div class="row">
         <div class="mx-auto mx-col-10 flex-column">
             <h1 class="h3 mb-3 font-weight-normal">Welcome to webWalletApp!</h1>
@@ -55,7 +55,6 @@
             },
         })
     }
-
     $('#sbm-btn').on('click', function(){
             send();
         });

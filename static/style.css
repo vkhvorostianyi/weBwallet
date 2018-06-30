@@ -1,7 +1,7 @@
 body, html {
     background-color: #343a40;
     color: white;
-    /*max-width: 480px;*/
+    max-height: 480px;
 }
 
 .login {
@@ -13,3 +13,7 @@ body, html {
 #sbm-btn {
     text-align: center;
 }
+ #main-cont {
+     margin-top: 100px;
+     max-width: 100%;
+ }
