@@ -1,6 +1,6 @@
 from flask import Flask
 from flask import render_template, url_for, jsonify, request
-from flask_simplelogin import SimpleLogin, login_required
+from flask_simplelogin import SimpleLogin, login_required, get_username
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 import os
@@ -15,18 +15,25 @@ try:
     heroku = Heroku(app)
 except KeyError:
     app.config.from_object(Config)
+
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 
-my_users = {'vkhvorostianyi': {'password': 'successs92', 'roles': []}}
+my_users = {
+            'slava': {'password': 'slava', 'roles': []},
+            'vita': {'password': 'vita', 'roles': []}
+            }
 
 
 class Spend(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    account = db.Column(db.String, default=None)
-    category = db.Column(db.String)
-    value = db.Column(db.Float(asdecimal=True))
+    account = db.Column(db.String(25), default=None)
+    category = db.Column(db.String(25))
+    value = db.Column(db.Float(asdecimal=True), default=0)
+    type = db.Column(db.String(10))
+    short_description = db.Column(db.String(80), default=None)
+    made_by = db.Column(db.String(10))
 
     def __repr__(self):
         return '<{} {}>'.format(self.category, self.value)
@@ -47,19 +54,27 @@ SimpleLogin(app, login_checker=check_my_users)
 @app.route('/', methods=['GET', 'POST'])
 @login_required
 def hello_world():
-    balance = db.session.query(func.sum(Spend.value)).one()[0]
-    return render_template('index.html', balance=balance)
+    outcome_sum = db.session.query(func.sum(Spend.value)).filter(Spend.type == 'outcome').first()[0] or 0
+    income_sum = db.session.query(func.sum(Spend.value)).filter(Spend.type == 'income').first()[0] or 0
+    balance = income_sum - outcome_sum
+    return render_template('index.html', balance=balance,
+                           income_sum=income_sum,
+                           outcome_sum=outcome_sum)
 
 
 @app.route('/process', methods=['GET', 'POST'])
 def process():
     fields_data = loads(request.form['fields_data'])
+    print(fields_data)
     if fields_data[0] and fields_data[1]:
-        spend = Spend(category=fields_data[0], value=fields_data[1])
+        spend = Spend(category=fields_data[0], value=fields_data[1],
+                      type=fields_data[2], short_description=fields_data[3],
+                      made_by=get_username())
+
         db.session.add(spend)
         db.session.commit()
         return jsonify({'val': True})
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8001)
+    app.run(host='0.0.0.0', port=8000)
