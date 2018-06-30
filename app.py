@@ -17,7 +17,7 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 
-my_users = {'slava': {'password': 'slava', 'roles': []}}
+my_users = {'vkhvorostianyi': {'password': 'successs92', 'roles': []}}
 
 
 class Spend(db.Model):
