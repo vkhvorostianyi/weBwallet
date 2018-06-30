@@ -8,7 +8,7 @@ from json import loads
 from sqlalchemy import func
 from flask_heroku import Heroku
 from config import Config
-
+from datetime import datetime
 app = Flask(__name__)
 try:
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
@@ -34,6 +34,7 @@ class Spend(db.Model):
     type = db.Column(db.String(10))
     short_description = db.Column(db.String(80), default=None)
     made_by = db.Column(db.String(10))
+    day_time = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     def __repr__(self):
         return '<{} {}>'.format(self.category, self.value)
