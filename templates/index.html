@@ -15,7 +15,7 @@
             <div class="form-signin">
                 <form method="post" id = 'add-spend'>
                     <label for="cat" class="sr-only">category</label>
-                    <input id="cat" list="cat-list" class="form-control" type="text">
+                    <input id="cat" list="cat-list" autocomplete="off" class="form-control" type="text">
                     <datalist id="cat-list">
                         <option>health and care</option>
                         <option>sport</option>
@@ -53,15 +53,6 @@
             data: {
                 fields_data: JSON.stringify(db_data)
             },
-
-            success: function (data) {
-                console.log(data);
-                $('#w-balance').append(
-                    {{ "%.2f"|format(balance) }}
-                )
-
-            }
-
         })
     }
 

@@ -10,7 +10,7 @@ from flask_heroku import Heroku
 from config import Config
 
 app = Flask(__name__)
-# app.config.config_from_object(Config)
+# app.config.from_object(Config)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 heroku = Heroku(app)
 db = SQLAlchemy(app)
@@ -56,8 +56,8 @@ def process():
         spend = Spend(category=fields_data[0], value=fields_data[1])
         db.session.add(spend)
         db.session.commit()
-        # return jsonify({'val': True})
+        return jsonify({'val': True})
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8000)
+    app.run(host='0.0.0.0', port=8001)

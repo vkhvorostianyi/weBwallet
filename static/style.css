@@ -1,8 +1,7 @@
 body, html {
     background-color: #343a40;
     color: white;
-    height: 50%;
-    width: 50%;
+    /*max-width: 480px;*/
 }
 
 .login {
