@@ -1,6 +1,6 @@
 from flask import Flask
-from flask import render_template, url_for, jsonify
-from flask_simplelogin import SimpleLogin, login_required, request
+from flask import render_template, url_for, jsonify, request
+from flask_simplelogin import SimpleLogin, login_required
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 import os
@@ -10,9 +10,11 @@ from flask_heroku import Heroku
 from config import Config
 
 app = Flask(__name__)
-# app.config.from_object(Config)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
-heroku = Heroku(app)
+try:
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+    heroku = Heroku(app)
+except KeyError:
+    app.config.from_object(Config)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
