@@ -37,7 +37,7 @@ class Spend(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     account = db.Column(db.String, default=None)
     category = db.Column(db.String)
-    value = db.Column(db.Float(precision=(5, 2), asdecimal=True))
+    value = db.Column(db.Float(precision='5,3', asdecimal=True))
 
     def __repr__(self):
         return '<{} {}>'.format(self.category, self.value)
