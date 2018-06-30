@@ -37,21 +37,19 @@
 
     $('.radio-check').on('click', function () {
 
+        $('#cat-list').html("");
         $('#val').prop('disabled', false);
         $('#cat').prop('disabled', false);
 
 
-
-
         let arr = ['House','Food','Sport','Health&Care','Transport','Gifts','Amusement'];
-        const list = document.getElementById('#cat-list');
-        $('#cat-list').html("");
+        const list = document.getElementById('cat-list');
 
         if($(this).val()== 'income') {
             arr = ['Wage','Interests','Bonus','Profit'];
         }
 
-        ['q','w'].forEach(item => {
+        arr.forEach(item => {
             let option = document.createElement('option');
             option.value = item;
             list.appendChild(option);

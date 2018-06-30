@@ -28,7 +28,7 @@ my_users = {
 
 class Spend(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    account = db.Column(db.String(25), default=None)
+    account = db.Column(db.String(25), default='Primary')
     category = db.Column(db.String(25))
     value = db.Column(db.Float(asdecimal=True), default=0)
     type = db.Column(db.String(10))
