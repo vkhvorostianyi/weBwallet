@@ -6,6 +6,7 @@ from flask_migrate import Migrate
 import os
 from json import loads
 from sqlalchemy import func
+from flask_heroku import Heroku
 
 app = Flask(__name__)
 
@@ -19,11 +20,12 @@ POSTGRES = {
     'port': '5432',
 }
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://%(user)s:%(pw)s@%(host)s:%(port)s/%(db)s' % POSTGRES
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://%(user)s:%(pw)s@%(host)s:%(port)s/%(db)s' % POSTGRES
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY') or 'my_task_secret_key'
 
+heroku = Heroku(app)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
@@ -35,7 +37,7 @@ class Spend(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     account = db.Column(db.String, default=None)
     category = db.Column(db.String)
-    value = db.Column(db.Float(precision=(5,2), asdecimal=True))
+    value = db.Column(db.Float(precision=(5, 2), asdecimal=True))
 
     def __repr__(self):
         return '<{} {}>'.format(self.category, self.value)
