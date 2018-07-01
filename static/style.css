@@ -1,7 +1,6 @@
 body, html {
     background-color: #343a40;
     color: white;
-    max-height: 480px;
 }
 
 .login {
@@ -14,11 +13,13 @@ body, html {
     text-align: center;
 }
  #main-cont {
-     margin-top: 50px;
-     max-width: 100%;
+    text-align: center;
+    position: relative;
+    top: 100px;
  }
 
  #last_tr {
+
      border-style: solid;
      border-color: white;
  }
