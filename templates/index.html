@@ -35,6 +35,7 @@
                     Balance:{{ "%.2f"|format(balance) }} uah
                 </p>
                 {% endif %}
+                {% if last_transaction %}
                 <div id="last_tr">
                     <b>Last transaction:</b><br>
                     Date: {{ last_transaction.day_time.strftime("%d-%m-%y %H:%M:%S")}}
@@ -42,6 +43,7 @@
                     Value: {{ "%.2f"|format(last_transaction.value) }}
                     Type: {{ last_transaction.type }}
                 </div>
+                {% endif %}
             </div>
         </div>
     </div>
