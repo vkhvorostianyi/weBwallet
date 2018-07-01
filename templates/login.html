@@ -35,7 +35,7 @@
                         </div><br>
                             {{form.password.label}}
                         <div>
-                            <input class="form-control" name="{{ form.password.name }}">
+                            <input class="form-control" type="password" name="{{ form.password.name }}">
                         </div><br>
                             {% if next %}<input type="hidden" name="next" value="{{next}}">{% endif %}
                             <input id="sbm-btn-login" class="btn btn-primary btn-block" type="submit" value="Login">
