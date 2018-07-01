@@ -55,7 +55,11 @@ SimpleLogin(app, login_checker=check_my_users)
 @app.route('/', methods=['GET', 'POST'])
 @login_required
 def hello_world():
-    last_transaction = Spend.query.all()[-1] or 0
+    try:
+        last_transaction = Spend.query.all()[-1]
+    except IndexError:
+        last_transaction = 0
+
     outcome_sum = db.session.query(func.sum(Spend.value)).filter(Spend.type == 'outcome').first()[0] or 0
     income_sum = db.session.query(func.sum(Spend.value)).filter(Spend.type == 'income').first()[0] or 0
     balance = income_sum - outcome_sum
