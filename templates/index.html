@@ -26,7 +26,7 @@
                  </form>
             </div>
             <br>
-            <div>
+            <div id="bal">
                 <p id="w-income">
                     Income:{{ "%.2f"|format(income_sum) }} uah Outcome:{{ "%.2f"|format(outcome_sum) }} uah
                 </p>
@@ -35,6 +35,13 @@
                     Balance:{{ "%.2f"|format(balance) }} uah
                 </p>
                 {% endif %}
+                <div id="last_tr">
+                    <b>Last transaction:</b><br>
+                    Date: {{ last_transaction.day_time.strftime("%d-%m-%y %H:%M:%S")}}
+                    Category: {{ last_transaction.category }}<br>
+                    Value: {{ "%.2f"|format(last_transaction.value) }}
+                    Type: {{ last_transaction.type }}
+                </div>
             </div>
         </div>
     </div>
