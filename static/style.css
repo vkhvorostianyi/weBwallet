@@ -23,10 +23,3 @@ body, html {
      border-style: solid;
      border-color: white;
  }
- textarea {
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-
-    width: 100%;
-}
