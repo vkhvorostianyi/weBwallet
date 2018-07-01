@@ -69,6 +69,7 @@ def hello_world():
 
 
 @app.route('/process', methods=['GET', 'POST'])
+@login_required
 def process():
     fields_data = loads(request.form['fields_data'])
     print(fields_data)
