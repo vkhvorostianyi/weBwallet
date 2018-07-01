@@ -6,7 +6,6 @@ body, html {
 .login {
     text-align: center;
     position: relative;
-    top: 100px;
 }
 
 #sbm-btn {
@@ -23,6 +22,6 @@ body, html {
      border-color: white;
  }
 
- #sbm-btn {
+ #sbm-btn, #sbm-btn-login {
      background: rgba(255, 169, 0, 0.71);
  }
