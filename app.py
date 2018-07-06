@@ -10,12 +10,8 @@ from flask_heroku import Heroku
 from config import Config
 from datetime import datetime
 app = Flask(__name__)
-try:
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
-    heroku = Heroku(app)
-except KeyError:
-    app.config.from_object(Config)
 
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
