@@ -1,50 +1,108 @@
-{% extends 'base.html' %}
-{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <style>
+        body{
+            background-color: #1C374F;
+        }
+        h2{
+            color: #ddd;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 20px;
+            margin: 5px 0 25px 0;
+            font-size: 1.3em;
+        }
+        .login {
+            width: 330px;
+            background-color: #5199C9;
+            text-align: center;
+            margin: auto;
+            margin-top: 40vh;
+            padding: 15px 0;
+            border-radius: 3px;
+            transform: translateY(-50%);
+        }
+        input[type='text'], input[type='password'], input[type='submit']{
+            border: none;
+            border-radius: 3px;
+            width: 220px;
+            padding: 5px;
+            font-size: 0.8em;
+        }
+        input[type='submit']{
+            width: 230px;
+            font-size: 1.1em;
+            background-color: #666666;
+            color: #ddd;
+            outline: none;
+            cursor: pointer;
+        }
+        input[type='submit']:active{
+            background-color: #333;
+        }
+        .show_pw{
+            position: absolute;
+            right: 58px;
+            top: 4px;
+            box-sizing: border-box;
+            width: 16px;
+            height: 16px;
+            padding: 4px;
+            border: 1px solid #666;
+            border-radius: 75% 15%;
+            font-size: 0.5em;
+            transform: rotate(45deg);
+            cursor: pointer;
+        }
+        .dot{
+            width: 8px;
+            height: 8px;
+            margin: -1px 0px 0px -1px;
+            background-color: #666;
+            border-radius: 50%;
+        }
+    </style>
+</head>
 <body>
-    <div class="container-fluid" id="main-cont">
-        <div class="row">
-            <div class=" col-xs-12 col-md-8">
-                <div class="login">
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                    {% if messages %}
-                      <p class="flashes">
-                      {% for category, message in messages %}
-                        <b style="color: #9C1A1C" class="{{category}}">{{ message }}</b>
-                      {% endfor %}
-                      </p>
-                    {% else %}
-                      <p class="flashes alert">
-                        <b>Please provide username and password to login</b>
-                      </p>
-                    {% endif %}
-                    {% endwith %}
-
-                    {%if form.errors %}
-                    <p style="color: #9C1A1C" class="alert">
-                      {% for field, errors in form.errors.items() %}
-                        <b>{{field}} {% for error in errors %}{{ error }}{% endfor %}</b>
-                      {% endfor %}
-                    </p>
-                    {% endif %}
-                    <form action="{{ url_for('simplelogin.login') }}" method="post">
-                        <div class="form-group">
-                            {{ form.csrf_token }}
-                            {{form.username.label}}
-                        <div>
-                            <input class="form-control" name="{{ form.username.name }}">
-                        </div><br>
-                            {{form.password.label}}
-                        <div>
-                            <input class="form-control" type="password" name="{{ form.password.name }}">
-                        </div><br>
-                            {% if next %}<input type="hidden" name="next" value="{{next}}">{% endif %}
-                            <input id="sbm-btn-login" class="btn btn-primary btn-block" type="submit" value="Login">
-                        </div>
-                    </form>
-                <p id="message"></p>
-                </div>
+    <div class="login">
+        <h2>Face recognition annotation tool</h2>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+              <p class="flashes alert">
+              {% for message in messages %}
+                <b style="color: #990023">{{ message }}</b>
+              {% endfor %}
+              </p>
+            {% endif %}
+        {% endwith %}
+        <form action="" method="post" novalidate>
+            {{ form.hidden_tag() }}
+            <p>
+                {{ form.username(size=32, placeholder='Username') }}<br>
+                {% for error in form.username.errors %}
+                <span style="color: #990023;">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+            <div style="position: relative;">
+               <div class="show_pw" onmouseover='show_password()' onmouseout="hide_password()"><div class="dot"></div></div>
+                {{ form.password(size=32, placeholder='Password') }}<br>
+                {% for error in form.password.errors %}
+                <span style="color: #990023;">[{{ error }}]</span>
+                {% endfor %}
             </div>
-        </div>
+            <p>{{ form.submit() }}</p>
+        </form>
     </div>
 </body>
-{% endblock %}
+<script>
+    var x = document.getElementById("password");
+    function show_password() {
+        x.type = "text";
+    }
+    function hide_password() {
+        x.type = "password";
+    }
+</script>
+</html>

@@ -8,6 +8,7 @@ from sqlalchemy import func
 from datetime import datetime
 from flask_wtf import FlaskForm
 from wtforms import SubmitField, StringField, PasswordField
+from wtforms.validators import DataRequired
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 
@@ -37,7 +38,7 @@ class Spend(db.Model):
 class AppUser(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String)
-    password = db.Column(db.String)
+    password_hash = db.Column(db.String)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -47,9 +48,10 @@ class AppUser(UserMixin, db.Model):
 
 
 class LoginForm(FlaskForm):
-    username = StringField
-    password = PasswordField
-    submit = SubmitField
+    username = StringField('Username', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    submit = SubmitField('Sign In')
+
 
 
 @login.user_loader
