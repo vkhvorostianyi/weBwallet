@@ -1,11 +1,14 @@
 from flask import Flask
-from flask import render_template, jsonify, request
-from flask_simplelogin import SimpleLogin, login_required, get_username
+from flask import render_template, jsonify, request, redirect, flash, url_for
+from flask_login import UserMixin, LoginManager,login_user, logout_user, login_required, current_user
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from json import loads
 from sqlalchemy import func
 from datetime import datetime
+from flask_wtf import FlaskForm
+from wtforms import SubmitField, StringField, PasswordField
+from werkzeug.security import generate_password_hash, check_password_hash
 import os
 
 app = Flask(__name__)
@@ -13,12 +16,8 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
-
-
-my_users = {
-            'slava': {'password': 'slava', 'roles': []},
-            'vita': {'password': 'vita', 'roles': []}
-            }
+login = LoginManager(app)
+login.login_view = 'login'
 
 
 class Spend(db.Model):
@@ -35,16 +34,48 @@ class Spend(db.Model):
         return '<{} {}>'.format(self.category, self.value)
 
 
-def check_my_users(user):
-    user_data = my_users.get(user['username'])
-    if not user_data:
-        return False
-    elif user_data.get('password') == user['password']:
-        return True
-    return False
+class AppUser(UserMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String)
+    password = db.Column(db.String)
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
 
 
-SimpleLogin(app, login_checker=check_my_users)
+class LoginForm(FlaskForm):
+    username = StringField
+    password = PasswordField
+    submit = SubmitField
+
+
+@login.user_loader
+def load_user(id):
+    return AppUser.query.get(int(id))
+
+
+@app.route('/login', methods=['POST'])
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data).first()
+        if user is None or not user.check_password(form.password.data):
+            flash('Invalid username or password')
+            return redirect(url_for('login'))
+        login_user(user, remember=True)
+        return redirect(url_for('index'))
+    return render_template('login.html', title='Sign In', form=form)
+
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -71,7 +102,7 @@ def process():
     if fields_data[0] and fields_data[1]:
         spend = Spend(category=fields_data[0], value=fields_data[1],
                       type=fields_data[2], short_description=fields_data[3],
-                      made_by=get_username())
+                      made_by=current_user)
 
         db.session.add(spend)
         db.session.commit()
