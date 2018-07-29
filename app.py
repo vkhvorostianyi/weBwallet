@@ -1,17 +1,15 @@
 from flask import Flask
-from flask import render_template, url_for, jsonify, request
+from flask import render_template, jsonify, request
 from flask_simplelogin import SimpleLogin, login_required, get_username
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-import os
 from json import loads
 from sqlalchemy import func
-from flask_heroku import Heroku
-from config import Config
 from datetime import datetime
-
+import os
 
 app = Flask(__name__)
+
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
@@ -81,4 +79,4 @@ def process():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8000)
+    app.run(host='0.0.0.0', port=8001)
