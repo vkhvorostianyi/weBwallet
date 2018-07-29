@@ -1,12 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Login</title>
+
+{% extends 'base.html' %}
+{% block content %}
     <style>
-        body{
-            background-color: #1C374F;
-        }
         h2{
             color: #ddd;
             border-bottom: 1px solid #ddd;
@@ -16,7 +11,7 @@
         }
         .login {
             width: 330px;
-            background-color: #5199C9;
+            background-color: rgba(57, 57, 55, 0.98);
             text-align: center;
             margin: auto;
             margin-top: 40vh;
@@ -32,10 +27,11 @@
             font-size: 0.8em;
         }
         input[type='submit']{
+            margin-top: 10px;
             width: 230px;
             font-size: 1.1em;
-            background-color: #666666;
-            color: #ddd;
+            background-color: #ffa700;
+            color: #fffbf7;
             outline: none;
             cursor: pointer;
         }
@@ -67,7 +63,7 @@
 </head>
 <body>
     <div class="login">
-        <h2>Face recognition annotation tool</h2>
+        <h2>Login</h2>
         {% with messages = get_flashed_messages() %}
             {% if messages %}
               <p class="flashes alert">
@@ -105,4 +101,4 @@
         x.type = "password";
     }
 </script>
-</html>
+{% endblock %}

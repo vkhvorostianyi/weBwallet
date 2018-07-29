@@ -11,6 +11,8 @@ from wtforms import SubmitField, StringField, PasswordField
 from wtforms.validators import DataRequired
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
+import sys
+
 
 app = Flask(__name__)
 
@@ -52,7 +54,6 @@ class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Sign In')
-
 
 
 @login.user_loader
@@ -113,4 +114,4 @@ def process():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8001)
+    app.run(host='0.0.0.0', port=sys.argv[1])
