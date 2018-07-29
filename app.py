@@ -15,6 +15,7 @@ import os
 app = Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+app.config['SECRET_KEY'] = 'secret_key'
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 login = LoginManager(app)
@@ -59,13 +60,13 @@ def load_user(id):
     return AppUser.query.get(int(id))
 
 
-@app.route('/login', methods=['POST'])
+@app.route('/login', methods=['POST', 'GET'])
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('index'))
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
+        user = AppUser.query.filter_by(username=form.username.data).first()
         if user is None or not user.check_password(form.password.data):
             flash('Invalid username or password')
             return redirect(url_for('login'))
@@ -82,7 +83,7 @@ def logout():
 
 @app.route('/', methods=['GET', 'POST'])
 @login_required
-def hello_world():
+def index():
     try:
         last_transaction = Spend.query.all()[-1]
     except IndexError:
