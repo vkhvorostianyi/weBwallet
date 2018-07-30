@@ -61,7 +61,7 @@ def load_user(id):
     return AppUser.query.get(int(id))
 
 
-@app.route('/login', methods=['POST', 'GET'])
+@app.route('/login/', methods=['POST', 'GET'])
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('index'))
@@ -76,7 +76,7 @@ def login():
     return render_template('login.html', title='Sign In', form=form)
 
 
-@app.route('/logout')
+@app.route('/logout/')
 def logout():
     logout_user()
     return redirect(url_for('index'))
@@ -106,7 +106,7 @@ def process():
     if fields_data[0] and fields_data[1]:
         spend = Spend(category=fields_data[0], value=fields_data[1],
                       type=fields_data[2], short_description=fields_data[3],
-                      made_by=current_user)
+                      made_by=current_user.username)
 
         db.session.add(spend)
         db.session.commit()
