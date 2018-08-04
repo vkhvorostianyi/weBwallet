@@ -9,4 +9,4 @@ EXPOSE 80
 
 ENV NAME env
 ENV DATABASE_URL='sqlite:///test.db'
-CMD ["python","app.py"]
+CMD ["python","app.py", "8000"]

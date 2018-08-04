@@ -3,19 +3,21 @@ from flask import render_template, jsonify, request, redirect, flash, url_for
 from flask_login import UserMixin, LoginManager,login_user, logout_user, login_required, current_user
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from json import loads
+from json import loads, dumps
 from sqlalchemy import func
 from datetime import datetime
 from flask_wtf import FlaskForm
 from wtforms import SubmitField, StringField, PasswordField
 from wtforms.validators import DataRequired
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_restful import Api, Resource
+
 import os
 import sys
 
 
 app = Flask(__name__)
-
+api = Api(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 app.config['SECRET_KEY'] = 'secret_key'
 db = SQLAlchemy(app)
@@ -32,7 +34,7 @@ class Spend(db.Model):
     type = db.Column(db.String(10))
     short_description = db.Column(db.String(80), default=None)
     made_by = db.Column(db.String(10))
-    day_time = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    day_time = db.Column(db.DateTime, nullable=False, default=datetime.now)
 
     def __repr__(self):
         return '<{} {}>'.format(self.category, self.value)
@@ -48,6 +50,13 @@ class AppUser(UserMixin, db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+
+class SpendApi(Resource):
+    def get(self):
+        q = db.session.execute('select * from spend')
+        data = [dict(i.items()) for i in q.fetchall()]
+        return jsonify({'data': data})
 
 
 class LoginForm(FlaskForm):
@@ -112,6 +121,7 @@ def process():
         db.session.commit()
         return jsonify({'val': True})
 
+api.add_resource(SpendApi, '/api/v1/all_transactions')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=sys.argv[1])
