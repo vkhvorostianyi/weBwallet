@@ -11,6 +11,7 @@ from wtforms import SubmitField, StringField, PasswordField
 from wtforms.validators import DataRequired
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_restful import Api, Resource
+import pandas as pd
 
 import os
 import sys
@@ -18,7 +19,7 @@ import sys
 
 app = Flask(__name__)
 api = Api(app)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db' #os.environ['DATABASE_URL']
 app.config['SECRET_KEY'] = 'secret_key'
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
@@ -85,6 +86,15 @@ def login():
     return render_template('login.html', title='Sign In', form=form)
 
 
+@app.route('/stat')
+def stat():
+    query = db.session.execute('SELECT category, SUM(value) as total  FROM spend GROUP BY 1 ORDER BY 2 DESC ')
+    data = {i[0]: i[1] for i in query.fetchall()}
+    df = pd.DataFrame()
+    df['category'] = pd.Series(list(data.keys()))
+    df['values'] = pd.Series(list(data.values()))
+    return render_template('stat.html', df=df)
+
 @app.route('/logout/')
 def logout():
     logout_user()
@@ -120,6 +130,7 @@ def process():
         db.session.add(spend)
         db.session.commit()
         return jsonify({'val': True})
+
 
 api.add_resource(SpendApi, '/api/v1/all_transactions')
 
