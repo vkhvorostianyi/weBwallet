@@ -88,7 +88,7 @@ def login():
 
 @app.route('/stat')
 def stat():
-    query = db.session.execute('SELECT category, SUM(value) as total  FROM spend GROUP BY 1 ORDER BY 2 DESC ')
+    query = db.session.execute("SELECT category, SUM(value) as total  FROM spend where type = 'outcome' GROUP BY 1 ORDER BY 2 DESC ")
     data = {i[0]: i[1] for i in query.fetchall()}
     df = pd.DataFrame()
     df['category'] = pd.Series(list(data.keys()))
