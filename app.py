@@ -19,7 +19,8 @@ import sys
 
 app = Flask(__name__)
 api = Api(app)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db' #os.environ['DATABASE_URL']
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../db_dir/test.db' 
+#os.environ['DATABASE_URL']
 app.config['SECRET_KEY'] = 'secret_key'
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
