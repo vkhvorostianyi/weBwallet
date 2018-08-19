@@ -7,7 +7,14 @@
     <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
 </head>
 <body class="text-center">
+<nav id="sidebar">
+    <a href="/logout"><input type="button" value="Logout"></a>
+    <a href="/dwld/test.db"><input type="button" value="Download db"></a>
+    <a href="/stat"><input type='button' value="Go to stat"></a>
+</nav>
+<div id="content">
 {% block content %} {% endblock %}
+</div>
 </body>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>

@@ -1,9 +1,9 @@
-from flask import Flask
+from flask import Flask, send_from_directory
 from flask import render_template, jsonify, request, redirect, flash, url_for
 from flask_login import UserMixin, LoginManager,login_user, logout_user, login_required, current_user
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from json import loads, dumps
+from json import loads
 from sqlalchemy import func
 from datetime import datetime
 from flask_wtf import FlaskForm
@@ -12,9 +12,7 @@ from wtforms.validators import DataRequired
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_restful import Api, Resource
 import pandas as pd
-
-import os
-import sys
+import sys, os
 
 
 app = Flask(__name__)
@@ -87,14 +85,21 @@ def login():
     return render_template('login.html', title='Sign In', form=form)
 
 
+@app.route('/dwld/test.db', methods=['GET', 'POST'])
+def download():
+    uploads = os.path.join(os.getcwd(), '..', 'db_dir')
+    return send_from_directory(directory=uploads, filename='test.db')
+
+
 @app.route('/stat')
 def stat():
-    query = db.session.execute("SELECT category, SUM(value) as total  FROM spend where type = 'outcome' GROUP BY 1 ORDER BY 2 DESC ")
-    data = {i[0]: i[1] for i in query.fetchall()}
-    df = pd.DataFrame()
-    df['category'] = pd.Series(list(data.keys()))
-    df['values'] = pd.Series(list(data.values()))
-    return render_template('stat.html', df=df)
+    query = db.session.execute('SELECT category, type, SUM(value) as total FROM spend GROUP BY 1,2 ORDER BY 2 DESC ')
+    data = list(query)
+    df = pd.DataFrame(data, columns=["category", "type", "value"])
+    df_out = df.loc[df['type'] == 'outcome']
+    df_in = df.loc[df['type'] == 'income']
+    return render_template('stat.html', df_in=df_in, df_out=df_out)
+
 
 @app.route('/logout/')
 def logout():
@@ -133,7 +138,7 @@ def process():
         return jsonify({'val': True})
 
 
-api.add_resource(SpendApi, '/api/v1/all_transactions')
+api.add_resource(SpendApi, '/api_v1/all_transactions')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=sys.argv[1])

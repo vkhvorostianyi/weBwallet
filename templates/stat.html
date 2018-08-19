@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    {{ df.to_html()| safe }}
+    <div class="row">
+        <div class="col-md-3">{{ df_out.to_html()| safe }}</div>
+        <div class="clo-md-3">{{ df_in.to_html()| safe }}</div>
+    </div>
     <a href="/">Go back</a>
 {%  endblock %}
