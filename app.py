@@ -95,9 +95,7 @@ def stat():
     query = db.session.execute('SELECT category, type, SUM(value) as total FROM spend GROUP BY 1,2 ORDER BY 2 DESC ')
     data = list(query)
     df = pd.DataFrame(data, columns=["category", "type", "value"])
-    df_out = df.loc[df['type'] == 'outcome']
-    df_in = df.loc[df['type'] == 'income']
-    return render_template('stat.html', df_in=df_in, df_out=df_out)
+    return render_template('stat.html', df=df)
 
 
 @app.route('/logout/')
